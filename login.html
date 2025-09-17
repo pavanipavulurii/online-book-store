@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Shopping Cart</title>
+</head>
+<body>
+  <h1>Your Cart</h1>
+  <ul id="cartList"></ul>
+  <p><a href="catalogue.html">Back to Catalogue</a></p>
+
+  <script>
+    // Retrieve cart data from localStorage
+    const savedCart = localStorage.getItem("cart");
+    // Expecting cart as array of objects: [{name: "Item 1", quantity: 2}, ...]
+    let items = savedCart ? JSON.parse(savedCart) : [];
+
+    const list = document.querySelector("#cartList");
+
+    function saveCart() {
+      localStorage.setItem("cart", JSON.stringify(items));
+    }
+
+    function renderCart() {
+      list.innerHTML = "";
+
+      if (items.length === 0) {
+        list.innerHTML = "<li>Your cart is empty.</li>";
+        return;
+      }
+
+      items.forEach((item, index) => {
+        const liElement = document.createElement("li");
+        liElement.textContent = `${item.name} (Quantity: ${item.quantity}) `;
+
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "Remove";
+        removeButton.style.marginLeft = "10px";
+        removeButton.addEventListener("click", () => {
+          items.splice(index, 1);
+          saveCart();
+          renderCart();
+        });
+
+        liElement.appendChild(removeButton);
+        list.appendChild(liElement);
+      });
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>
